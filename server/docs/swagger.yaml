@@ -1,0 +1,114 @@
+basePath: /
+definitions:
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:5000
+info:
+  contact:
+    email: support@localhost:6000
+    name: API Support
+    url: http://www.localhost:6000/support
+  description: This is a sample server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://localhost:6000/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all Users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all Users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create User
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update User By Email
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update User By Email
+      tags:
+      - users
+  /api/v1/users/{email}:
+    get:
+      consumes:
+      - application/json
+      description: Find User By Email
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Find User By Email
+      tags:
+      - users
+swagger: "2.0"
