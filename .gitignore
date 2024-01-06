@@ -25,3 +25,4 @@ server/bin
 server/tmp
 tmp
 .do_tasks
+server/templates/node_modules

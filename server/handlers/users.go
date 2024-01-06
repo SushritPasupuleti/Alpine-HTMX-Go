@@ -2,9 +2,13 @@ package handlers
 
 import (
 	// "context"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
+	"strings"
+
 	// "time"
 
 	// "go/format"
@@ -17,6 +21,7 @@ import (
 	"server/helpers"
 	"server/middleware"
 	"server/models"
+
 	// "server/redis"
 
 	"github.com/go-chi/chi/v5"
@@ -44,6 +49,32 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Error getting users")
 		helpers.ErrorJSON(w, errors.New("No users found"), http.StatusInternalServerError)
+		return
+	}
+
+	// if request header accepts text/html, then return a html template
+	if strings.Contains(r.Header.Get("Accept"), "text/html") {
+		log.Info().Msg("Accepts text/html")
+		w.Header().Set("Content-Type", "text/html")
+
+		t, _ := template.ParseFiles("templates/users-list.html")
+
+		var buf bytes.Buffer
+
+		err = t.Execute(&buf, users)
+
+		// log.Info().Msgf("buf: %s", buf.String())
+
+		//save to cache
+		middleware.SaveToCacheRaw(r, buf.String())
+		
+		w.Write([]byte(buf.String()))
+
+		if err != nil {
+			log.Error().Err(err).Msg("Error executing template")
+			w.Write([]byte("Error executing template"))
+			return
+		}
 		return
 	}
 

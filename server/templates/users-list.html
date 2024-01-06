@@ -1,0 +1,63 @@
+<div>
+  <h2 class="text-xl font-bold dark:text-white text-gray-900 sm:text-2xl px-4">
+    Users List
+  </h2>
+  <br />
+  <div class="overflow-x-auto px-4">
+    <table
+      class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:bg-slate-800 dark:text-slate-400"
+    >
+      <thead class="ltr:text-left rtl:text-right">
+        <tr>
+          <th
+            class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"
+          >
+            S.no
+          </th>
+          <th
+            class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"
+          >
+            Name
+          </th>
+          <th
+            class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"
+          >
+            Email
+          </th>
+          <th
+            class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"
+          >
+            Created At
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200 dark:divide-slate-400">
+        {{range $index, $element := .}}
+        <tr>
+          <td
+            class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"
+          >
+            {{$index}}
+          </td>
+          <td
+            class="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-slate-400"
+          >
+            {{$element.Name}}
+          </td>
+          <td
+            class="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-slate-400"
+          >
+            {{$element.Email}}
+          </td>
+          <td
+            class="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-slate-400"
+          >
+            {{$element.CreatedAt}}
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+</div>

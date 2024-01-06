@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AlpineHTMX</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/dist/main.css" rel="stylesheet" />
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  </head>
+
+  <body class="bg-white dark:bg-slate-800">
+    <header>
+      <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div class="sm:flex sm:items-center sm:justify-between">
+          <div class="text-center sm:text-left">
+            <h1 class="text-2xl font-bold dark:text-white text-gray-900 sm:text-3xl">
+              User Management Dashboard
+            </h1>
+
+            <p class="mt-1.5 text-sm dark:text-slate-400 text-gray-500">
+              Manage your users with this React-free Dashboard, powered by
+              AlpineJS and HTMX.
+            </p>
+          </div>
+
+          <div
+            class="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center"
+          >
+            <button
+              class="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
+              type="button"
+              hx-get="/api/v1/users"
+              hx-headers='{"Accept": "text/html"}'
+              hx-swap="innerHTML show:top"
+              hx-target="#users-list"
+            >
+              Load Users List
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="users-list"></div>
+  </body>
+</html>

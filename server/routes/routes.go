@@ -3,6 +3,8 @@ package routes
 
 import (
 	"fmt"
+	"html/template"
+	"strings"
 	"time"
 
 	// "log"
@@ -28,6 +30,8 @@ import (
 
 	// "server/models"
 	_ "server/docs"
+
+	"github.com/rs/zerolog/log"
 )
 
 var tokenAuth *jwtauth.JWTAuth
@@ -46,7 +50,9 @@ func Routes() http.Handler {
 		FrameDeny:          true,
 		ContentTypeNosniff: true,
 		BrowserXssFilter:   true,
-		ContentSecurityPolicy: "default-src 'self'",
+		// ContentSecurityPolicy: "default-src 'self'",
+		// This allows htmx's script to be loaded from unpkg.com
+		ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://unpkg.com;",
 	})
 
 	router := chi.NewRouter()
@@ -72,7 +78,28 @@ func Routes() http.Handler {
 	})
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		// if request header accepts text/html, then return a html template
+		if strings.Contains(r.Header.Get("Accept"), "text/html") {
+			log.Info().Msg("Accepts text/html")
+			w.Header().Set("Content-Type", "text/html")
+
+			t, _ := template.ParseFiles("templates/index.html")
+			err := t.Execute(w, nil)
+			if err != nil {
+				log.Error().Err(err).Msg("Error executing template")
+				w.Write([]byte("Error executing template"))
+				return
+			}
+			return
+		}
+
 		w.Write([]byte("API is up and running"))
+	})
+	
+	//serve css
+	router.Get("/dist/main.css", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/css")
+		http.ServeFile(w, r, "templates/main.css")
 	})
 
 	router.Get("/swagger/*", httpSwagger.Handler(

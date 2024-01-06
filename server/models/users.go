@@ -29,7 +29,7 @@ func (u *User) Create(user User) (*User, error) {
 
 	if err != nil {
 		log.Error().Err(err).Msg("Error finding user")
-		return nil, errors.New("Error finding user")
+		// return nil, errors.New("Error finding user")
 	}
 
 	if dupe != nil {
