@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"server/helpers"
 	"server/redis"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -16,7 +17,8 @@ import (
 // Prepare route key for caching
 func PrepareRouteKey(r *http.Request) (string, error) {
 
-	return r.Method + "." + r.URL.Path + "." + r.URL.RawQuery, nil
+	//Includes `Accept` header in the cache key to allow for different responses based on the `Accept` header
+	return r.Method + "." + r.Header.Get("Accept") + "." + r.URL.Path + "." + r.URL.RawQuery, nil
 }
 
 // Returns a base64 encoded string of the payload with the route and method prepended
@@ -102,6 +104,39 @@ func SaveToCache(r *http.Request, response interface{}) (string, error) {
 	return cacheKey, nil
 }
 
+// Save the response to cache without stringifying it
+func SaveToCacheRaw(r *http.Request, response string) (string, error) {
+	
+	// Prepare the cache key
+	routeKey, err := PrepareRouteKey(r)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error preparing route key")
+		return "", err
+	}
+
+	log.Info().Msgf("Body: %v", r.Body)
+	// Prepare the cache key
+	cacheKey, err := PrepareCacheKey(r.Body, routeKey)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error preparing cache key")
+		return "", err
+	}
+
+	// Save to cache
+	err = redis.SetCache(cacheKey, response, 0)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error saving to cache")
+		return "", err
+	}
+
+	// log.Info().Msgf("Successfully saved to cache: %s", cacheKey)
+
+	return cacheKey, nil
+}
+
 // Get the cached response and convert it to JSON
 func CachedResponseToJSON(cacheKey string) ([]map[string]interface{}, error) {
 
@@ -154,6 +189,30 @@ func CacheMiddleware(ttl time.Duration) func(http.Handler) http.Handler {
 			cacheKey, err := PrepareCacheKey(r.Body, routeKey)
 			if err != nil {
 				log.Fatal().Err(err).Msg("Error preparing cache key")
+				return
+			}
+
+			// log.Info().Msgf("cacheKey: %s", cacheKey)
+
+			//check if cache key contains "text/html"
+			if strings.Contains(cacheKey, "text/html") {
+				// log.Info().Msgf("Accepts text/html")
+
+				response, err := redis.GetCache(cacheKey)
+
+				if err != nil {
+					log.Fatal().Err(err).Msg("Error getting cached response")
+					return
+				}
+
+				if response == "" {
+					log.Info().Msgf("No cached response found for %s", cacheKey)
+					next.ServeHTTP(w, r)
+				}
+
+				w.Header().Set("Content-Type", "text/html")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(response))
 				return
 			}
 

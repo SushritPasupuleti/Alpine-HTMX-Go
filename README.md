@@ -1,6 +1,6 @@
 # Alpine HTMX Go Web App
 
-Serving a web experience similar to React, through Alpine.js, HTMX and a Go chi server.
+Serving a web experience similar to React, through Alpine.js, HTMX served by a Go-chi server.
 
 Server bootstrapped [from](https://github.com/SushritPasupuleti/Go-Chi-Boilerplate).
 
@@ -18,6 +18,14 @@ Server bootstrapped [from](https://github.com/SushritPasupuleti/Go-Chi-Boilerpla
 
 - [Go Chi](https://github.com/go-chi/chi)
 
+## Features
+
+- [x] Switch between `json` and `html` response types based on `Accept` header. Keeps the API interoperable with other clients.
+
+- [x] Caching for `html` responses in addition to `json` responses.
+
+Base features are carried over from the [boilerplate](https://github.com/SushritPasupuleti/Go-Chi-Boilerplate).
+
 ## Setup
 
 Run `make` to see all available commands.
@@ -30,6 +38,16 @@ make packages_install
 ```
 
 ### Run
+
+Before running, make sure generate the `tailwindcss` styles.
+
+```bash
+cd server/templates
+yarn install
+yarn build
+```
+
+> Alternatively, you can run `yarn watch` to watch for changes during development.
 
 ```bash
 cd server
