@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"strings"
 
 	"net/http"
 	"os"
@@ -95,4 +96,12 @@ func InterfaceArrayToStringArray(arr []interface{}) []string {
 		// println("InterfaceArrayToStringArray: v=", arr[i])
 	}
 	return stringArr
+}
+
+func IsHTMXRequest(r *http.Request) bool {
+	return r.Header.Get("HX-Request") == "true"
+}
+
+func SupportsHTML(r *http.Request) bool {
+	return strings.Contains(r.Header.Get("Accept"), "text/html")
 }

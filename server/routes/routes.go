@@ -4,7 +4,6 @@ package routes
 import (
 	"fmt"
 	"html/template"
-	"strings"
 	"time"
 
 	// "log"
@@ -26,6 +25,7 @@ import (
 	"server/authorization"
 	"server/env"
 	"server/handlers"
+	"server/helpers"
 	middlewareCustom "server/middleware"
 
 	// "server/models"
@@ -79,7 +79,7 @@ func Routes() http.Handler {
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		// if request header accepts text/html, then return a html template
-		if strings.Contains(r.Header.Get("Accept"), "text/html") {
+		if helpers.SupportsHTML(r) {
 			log.Info().Msg("Accepts text/html")
 			w.Header().Set("Content-Type", "text/html")
 
@@ -95,11 +95,23 @@ func Routes() http.Handler {
 
 		w.Write([]byte("API is up and running"))
 	})
-	
+
 	//serve css
 	router.Get("/dist/main.css", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 		http.ServeFile(w, r, "templates/main.css")
+	})
+
+	//serve login page
+	router.Get("/login", func(w http.ResponseWriter, r *http.Request) {
+		t, _ := template.ParseFiles("templates/login.html")
+		err := t.Execute(w, nil)
+
+		if err != nil {
+			log.Error().Err(err).Msg("Error executing template")
+			w.Write([]byte("Error executing template"))
+			return
+		}
 	})
 
 	router.Get("/swagger/*", httpSwagger.Handler(

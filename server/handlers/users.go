@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"strings"
 
 	// "time"
 
@@ -53,8 +52,8 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// if request header accepts text/html, then return a html template
-	if strings.Contains(r.Header.Get("Accept"), "text/html") {
-		log.Info().Msg("Accepts text/html")
+	if helpers.SupportsHTML(r) {
+		// log.Info().Msg("Accepts text/html")
 		w.Header().Set("Content-Type", "text/html")
 
 		t, _ := template.ParseFiles("templates/users-list.html")
@@ -67,7 +66,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 		//save to cache
 		middleware.SaveToCacheRaw(r, buf.String())
-		
+
 		w.Write([]byte(buf.String()))
 
 		if err != nil {
