@@ -53,3 +53,7 @@ yarn build
 cd server
 make run
 ```
+
+## Design Considerations and Advice
+
+- Create helper functions to return specific `error` types. This will help you to handle errors in a more granular way. Example: `NotFound`, `Unauthorized`, `Forbidden`, `BadRequest`, `InternalServerError` could trigger rendering of a toast notification or a banner.

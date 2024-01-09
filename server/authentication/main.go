@@ -29,17 +29,30 @@ type UserAuth struct {
 func GenerateToken(w http.ResponseWriter, r *http.Request) {
 	var user UserAuth
 
-	err := json.NewDecoder(r.Body).Decode(&user)
+	log.Info().Msgf("Body: %v %v", r.FormValue("username"), r.FormValue("password"))
 
-	if err != nil {
-		log.Error().Err(err).Msg("Error decoding user")
-		helpers.ErrorJSON(w, err, http.StatusBadRequest)
-		return
+	var HTMXRequest bool
+
+	HTMXRequest = helpers.IsHTMXRequest(r)
+
+	//check if HTMX request
+	if HTMXRequest {
+		user.UserName = r.FormValue("username")
+		user.Password = r.FormValue("password")
+	} else {
+
+		err := json.NewDecoder(r.Body).Decode(&user)
+
+		if err != nil {
+			log.Error().Err(err).Msg("Error decoding user")
+			helpers.ErrorJSON(w, err, http.StatusBadRequest)
+			return
+		}
 	}
 
 	validate := validator.New()
 
-	err = validate.Struct(user)
+	err := validate.Struct(user)
 
 	var validationErrors []string
 
@@ -72,6 +85,13 @@ func GenerateToken(w http.ResponseWriter, r *http.Request) {
 	//validate user credentials
 	verified := helpers.ComparePasswords(current_user.Password, user.Password)
 	if !verified {
+
+		if HTMXRequest {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Invalid Credentials Passed"))
+			return
+		}
+
 		helpers.ErrorJSON(w, errors.New("Invalid Credentials Passed"), http.StatusBadRequest)
 		return
 	}
@@ -135,6 +155,33 @@ func GenerateToken(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Error().Err(err).Msg("Error saving JTI to redis")
 			helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+			return
+		}
+
+		if HTMXRequest {
+			cookieRT := http.Cookie{
+				Name:     "refresh_token",
+				Value:    rt,
+				Expires:  time.Now().Add(time.Hour * 24 * 7),
+				HttpOnly: true,
+				SameSite: http.SameSiteStrictMode,
+				Secure:   true,
+			}
+			cookieJWT := http.Cookie{
+				Name:     "jwt",
+				Value:    signedToken,
+				Expires:  time.Now().Add(time.Hour * 24),
+				HttpOnly: true,
+				SameSite: http.SameSiteStrictMode,
+				Secure:   true,
+			}
+
+			http.SetCookie(w, &cookieRT)
+			http.SetCookie(w, &cookieJWT)
+
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Login Successful"))
+			// http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
 		}
 
