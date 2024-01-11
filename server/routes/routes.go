@@ -52,7 +52,8 @@ func Routes() http.Handler {
 		BrowserXssFilter:   true,
 		// ContentSecurityPolicy: "default-src 'self'",
 		// This allows htmx's script to be loaded from unpkg.com
-		ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://unpkg.com;",
+		ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://unpkg.com 'nonce-a23gbfz9e'; style-src 'self';",
+		// ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net;",
 	})
 
 	router := chi.NewRouter()
@@ -100,6 +101,12 @@ func Routes() http.Handler {
 	router.Get("/dist/main.css", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 		http.ServeFile(w, r, "templates/main.css")
+	})
+
+	//serve js
+	router.Get("/dist/main.js", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/javascript")
+		http.ServeFile(w, r, "templates/main.js")
 	})
 
 	//serve login page

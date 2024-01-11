@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>AlpineHTMX</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- <meta -->
+	<!--   http-equiv="Content-Security-Policy" -->
+	<!--   content="default-src 'self'; script-src 'self' https://unpkg.com 'nonce-a23gbfz9e';" -->
+	<!-- /> -->
+	<link href="/dist/main.css" rel="stylesheet" />
+	<script type="text/javascript" src="/dist/main.js"></script>
+	<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+	<script defer nonce="a23gbfz9e" src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.x.x/dist/cdn.min.js"></script>
+
+	<!-- <script src="https://cdn.tailwindcss.com"></script> -->
+</head>
+
+<body class="bg-white dark:bg-slate-800">
+	<div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+		<div id="logout-form" class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8" x-data="auth">
+			<div class="sm:flex sm:items-center sm:justify-between">
+				<div class="text-center sm:text-left">
+					<h1 class="text-2xl font-bold dark:text-white text-gray-900 sm:text-3xl">
+						Hello, user!
+					</h1>
+
+					<p class="mt-1.5 text-sm dark:text-slate-400 text-gray-500">
+						You have successfully logged in. You can now head to the <b>Dashboards</b> or <b>Logout</b>!
+					</p>
+				</div>
+
+				<div class="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
+					<a href="/">
+						<button
+							class="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring">
+							Dashboard
+						</button>
+						<a x-on:click="logout">
+							<button
+								class="block rounded-lg bg-red-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-red-700 focus:outline-none focus:ring">
+								Logout
+							</button>
+						</a>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div id="login-form">
+			<div class="mx-auto max-w-lg text-center">
+				<h1 class="text-2xl font-bold sm:text-3xl dark:text-white">
+					Get started today!
+				</h1>
+
+				<p class="mt-4 text-gray-500">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Et libero
+					nulla eaque error neque ipsa culpa autem, at itaque nostrum!
+				</p>
+			</div>
+			<!-- hx-post="/oauth/token" hx-headers='{"HTMX-Request": "true"}' -->
+			<div class="mx-auto mb-0 mt-8 max-w-md space-y-4" action="">
+				<div>
+					<label for="email" class="sr-only">Email</label>
+
+					<div class="relative">
+						<input name="username" type="email"
+							class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+							placeholder="Enter email" />
+
+						<span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
+								viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+							</svg>
+						</span>
+					</div>
+				</div>
+
+				<div>
+					<label for="password" class="sr-only">Password</label>
+
+					<div class="relative">
+						<input name="password" type="password"
+							class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+							placeholder="Enter password" />
+
+						<span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
+								viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+							</svg>
+						</span>
+					</div>
+				</div>
+
+				<div class="flex items-center justify-between">
+					<p class="text-sm text-gray-500">
+						No account?
+						<a class="underline" href="">Sign up</a>
+					</p>
+
+					<button id="login-btn"
+						class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white">
+						Sign in
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- <button id="login-btn">login</button> -->
+		<!-- <div x-data="auth"> -->
+		<!-- 	<button @click="init">auth</button> -->
+		<!-- 	jwt: <span x-text="jwt" /> -->
+		<!-- 	<br /> -->
+		<!-- 	refresh_token: <span x-text="refreshToken" /> -->
+		<!-- 	<button x-on:click="logout()">Logout</button> -->
+		<!---->
+		<!-- </div> -->
+</body>
+<script nonce="a23gbfz9e">
+	document.addEventListener("alpine:init", () => {
+		Alpine.data("auth", () => {
+			return {
+				jwt: null,
+				refreshToken: null,
+				authorized: true,
+				init() {
+					console.log("auth", document.cookie);
+					const jwt = getCookie("jwt");
+					const refreshToken = getCookie("refresh_token");
+					console.log("jwt", jwt);
+					console.log("refresh_token", refreshToken);
+					if (jwt) {
+						this.set_jwt(jwt);
+					}
+					if (refreshToken) {
+						this.set_refresh_token(refreshToken);
+					}
+				},
+				set_jwt(jwt) {
+					this.jwt = jwt;
+				},
+				set_refresh_token(refresh_token) {
+					this.refreshToken = refresh_token;
+				},
+				logout() {
+					console.log("logout");
+					this.jwt = null;
+					this.refreshToken = null;
+
+					deleteCookie("jwt");
+					deleteCookie("refresh_token");
+					location.reload();
+				},
+			};
+		});
+	});
+</script>
+
+</html>

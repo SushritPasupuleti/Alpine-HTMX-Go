@@ -57,3 +57,33 @@ make run
 ## Design Considerations and Advice
 
 - Create helper functions to return specific `error` types. This will help you to handle errors in a more granular way. Example: `NotFound`, `Unauthorized`, `Forbidden`, `BadRequest`, `InternalServerError` could trigger rendering of a toast notification or a banner.
+
+## Pros and Cons
+
+This approach is not a replacement for React and co. But it can be used when you are looking for the following set of pros, while being aware of the cons.
+
+### Pros
+
+- Potentially higher RPS (Requests per second) if coupled with a strong backend, with caching/CDNs and other optimizations.
+
+- Server Driven UIs. (SEO, Easier A/B testing, etc.)
+
+- Co-opt (incrementally) with existing applications.
+
+- Simpler DevOps. (No need to deploy a separate frontend app)
+
+- Skip expensive JSON serialization and deserialization on both ends.
+
+### Cons
+
+- CSP (Content Security Policy) can be a nightmare to configure.
+
+    - Refer to [this](https://alpinejs.dev/advanced/csp) for Alpine.js. (TL;DR: Strict CSP takes away most of the ease of Alpine.js)
+
+    - Refer to [this](https://htmx.org/docs/#security) for HTMX. (TL;DR: HTMX with tight configuration can be secure, but the lack of Alpine.js's ease makes the overall experience less pleasant)
+
+- More data transferred per Request (HTML is more verbose than JSON)
+
+- Slower/Constrained Developer Experience (Hard to Debug, Poor IDE support, syntax highlighting, autocomplete, etc.)
+
+- Code Sharing and Monorepo advantages from a stack like React+React Native are lost.
