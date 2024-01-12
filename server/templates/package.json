@@ -5,12 +5,14 @@
 	"license": "MIT",
 	"devDependencies": {
 		"autoprefixer": "^10.4.16",
+		"minify": "^11.0.1",
 		"postcss": "^8.4.33",
 		"tailwindcss": "^3.4.0"
 	},
 	"scripts": {
-		"build": "npx tailwindcss -i input.css -o main.css",
+		"minify": "npx minify input.js > main.js",
+		"build": "yarn minify && npx tailwindcss -i input.css -o main.css",
 		"watch": "npx tailwindcss -i input.css -o main.css --watch",
-		"clean": "rm -rf main.css"
+		"clean": "rm -rf main.css main.js"
 	}
 }

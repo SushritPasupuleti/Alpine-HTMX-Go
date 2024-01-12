@@ -20,6 +20,10 @@ Server bootstrapped [from](https://github.com/SushritPasupuleti/Go-Chi-Boilerpla
 
 ## Features
 
+- [x] Fully CSP compliant.
+
+- [x] Authentication and Authorization flows with JWT.
+
 - [x] Switch between `json` and `html` response types based on `Accept` header. Keeps the API interoperable with other clients.
 
 - [x] Caching for `html` responses in addition to `json` responses.

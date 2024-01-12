@@ -2,8 +2,6 @@ window.addEventListener('DOMContentLoaded', function() {
 	console.log("DOM loaded");
 	document.getElementById("login-btn").addEventListener("click", auth);
 
-	document.getElementById("logout-form").style.display = "none";
-
 	is_auth = checkAuth();
 
 	if (is_auth) {
@@ -13,11 +11,15 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 
 	if (!is_auth && window.location.pathname != "/login") {
+		document.getElementById("login-form").style.display = "block";
+		document.getElementById("logout-form").style.display = "none";
 		console.log("redirect to login");
 		window.location.href = "/login";
 	}
 
-	else {
+	else if (!is_auth && window.location.pathname == "/login") {
+		document.getElementById("login-form").style.display = "block";
+		document.getElementById("logout-form").style.display = "none";
 		console.log("no redirect");
 	}
 });
