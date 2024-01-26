@@ -31,9 +31,7 @@ func GenerateToken(w http.ResponseWriter, r *http.Request) {
 
 	log.Info().Msgf("Body: %v %v", r.FormValue("username"), r.FormValue("password"))
 
-	var HTMXRequest bool
-
-	HTMXRequest = helpers.IsHTMXRequest(r)
+	HTMXRequest := helpers.IsHTMXRequest(r)
 
 	//check if HTMX request
 	if HTMXRequest {

@@ -2,11 +2,11 @@ package handlers
 
 import (
 	// "context"
-	"bytes"
+	// "bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"html/template"
+	// "html/template"
 
 	// "time"
 
@@ -18,6 +18,7 @@ import (
 
 	"server/authentication"
 	"server/helpers"
+	"server/htmx"
 	"server/middleware"
 	"server/models"
 
@@ -53,27 +54,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	// if request header accepts text/html, then return a html template
 	if helpers.SupportsHTML(r) {
-		// log.Info().Msg("Accepts text/html")
-		w.Header().Set("Content-Type", "text/html")
-
-		t, _ := template.ParseFiles("templates/users-list.html")
-
-		var buf bytes.Buffer
-
-		err = t.Execute(&buf, users)
-
-		// log.Info().Msgf("buf: %s", buf.String())
-
-		//save to cache
-		middleware.SaveToCacheRaw(r, buf.String())
-
-		w.Write([]byte(buf.String()))
-
-		if err != nil {
-			log.Error().Err(err).Msg("Error executing template")
-			w.Write([]byte("Error executing template"))
-			return
-		}
+		htmx.GetAllUsers(w, r, users)
 		return
 	}
 

@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"log"
@@ -76,6 +77,27 @@ func ErrorJSON(w http.ResponseWriter, err error, status ...int) {
 	payload.Error = true
 	payload.Message = err.Error()
 	WriteJSON(w, statusCode, payload)
+}
+
+func WriteHTML(w http.ResponseWriter, status int, buf bytes.Buffer) error {
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(status)
+	_, err := w.Write(buf.Bytes())
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func WriteHTMLError(w http.ResponseWriter, err error, status int, buf bytes.Buffer) error {
+	statusCode := http.StatusBadRequest
+
+	if buf.Len() == 0 {
+		buf.WriteString(err.Error())
+	}
+
+	return WriteHTML(w, statusCode, buf)
 }
 
 // `Contains` checks if an element is in an array
